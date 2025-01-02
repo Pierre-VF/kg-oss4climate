@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "kg-oss4climate"
+version = "0.1.0"
+description = "Knowledge graph building for OSS in the climate space"
+authors = ["Pierre V-F <pierre@pierrevf.consulting>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
