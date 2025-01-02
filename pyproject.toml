@@ -11,6 +11,8 @@ python = "^3.12,<3.13"
 pandas = "^2.2.3"
 oss4climate = {url = "https://github.com/Pierre-VF/oss4climate/archive/refs/heads/main.zip"}
 networkx = "^3.4.2"
+tqdm = "^4.67.1"
+spacy = "^3.8.3"
 
 
 [build-system]
