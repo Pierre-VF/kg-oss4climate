@@ -17,11 +17,11 @@ load_dotenv()
 
 class Settings(BaseSettings):
     MISTRAL_API_KEY: str
+    MISTRAL_MODEL: str = "mistral-medium"
 
 
 graph = Neo4jGraph(
     url="neo4j://localhost",
-    # database="",
     username="neo4j",
     password="your_password",
     driver_config=dict(),
@@ -29,7 +29,7 @@ graph = Neo4jGraph(
 
 
 llm_transformer = LLMGraphTransformer(
-    llm=ChatMistralAI(temperature=0, model_name="mistral-small")
+    llm=ChatMistralAI(temperature=0, model_name=Settings().MISTRAL_MODEL)
 )
 
 
@@ -42,5 +42,5 @@ print("Done")
 print(" ")
 
 print("Adding to graph")
-graph.add_graph_documents(graph_documents)
+graph.add_graph_documents(graph_documents, include_source=True)
 print("Done")

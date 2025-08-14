@@ -1,4 +1,4 @@
-
+#!/bin/bash
 
 mkdir -p .data/neo4j/data &&
 mkdir -p .data/plugins &&
