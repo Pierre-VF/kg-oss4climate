@@ -19,18 +19,19 @@ class Settings(BaseSettings):
     MISTRAL_API_KEY: str
 
 
-# ------------------- Important --------------------
+graph = Neo4jGraph(
+    url="neo4j://localhost",
+    # database="",
+    username="neo4j",
+    password="your_password",
+    driver_config=dict(),
+)
+
+
 llm_transformer = LLMGraphTransformer(
     llm=ChatMistralAI(temperature=0, model_name="mistral-small")
 )
-# ------------------- Important --------------------
 
-graph = Neo4jGraph(
-    url="neo4j://localhost",
-    database="",
-    username="neo4j",
-    password="your_password",
-)
 
 document = TextLoader(".data/sample.txt").load()
 
