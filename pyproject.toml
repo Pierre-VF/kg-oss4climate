@@ -1,20 +1,14 @@
-[tool.poetry]
+[project]
 name = "kg-oss4climate"
-version = "0.1.0"
-description = "Knowledge graph building for OSS in the climate space"
-authors = ["Pierre V-F <pierre@pierrevf.consulting>"]
-license = "MIT"
+version = "0.2.0"
+description = "This package  supports Knowledge Graph building for climate"
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.12,<3.13"
-pandas = "^2.2.3"
-oss4climate = {url = "https://github.com/Pierre-VF/oss4climate/archive/refs/heads/main.zip"}
-networkx = "^3.4.2"
-tqdm = "^4.67.1"
-spacy = "^3.8.3"
-
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires-python = ">=3.13"
+dependencies = [
+    "langchain-community>=0.3.27",
+    "langchain-experimental>=0.3.4",
+    "langchain-mistralai>=0.2.11",
+    "langchain-neo4j>=0.5.0",
+    "pydantic-settings>=2.10.1",
+    "python-dotenv>=1.1.1",
+]
