@@ -12,3 +12,7 @@ local_db_run:
 .PHONY: cleanup
 cleanup:
 	uv tool run pre-commit run --all
+
+.PHONY: test
+test:
+	uv run pytest src/test

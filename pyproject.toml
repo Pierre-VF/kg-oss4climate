@@ -27,3 +27,6 @@ builder = [
     "markdown>=3.8.2",
     "unstructured>=0.18.13",
 ]
+test = [
+    "pytest>=8.4.1",
+]
