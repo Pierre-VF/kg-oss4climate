@@ -2,17 +2,30 @@
 Module for LLM-based graph generation
 """
 
-from langchain_community.document_loaders import (
-    TextLoader,
-    UnstructuredMarkdownLoader,
-)
-from langchain_experimental.graph_transformers import LLMGraphTransformer
-from langchain_mistralai import ChatMistralAI
 from langchain_neo4j import Neo4jGraph
 from langchain_neo4j.graphs.graph_document import GraphDocument
 from pydantic_settings import BaseSettings
 
+from climate_knowledge_graph.exceptions import MissingDependencyInstall
 from climate_knowledge_graph.semantics import RELATIONSHIPS
+
+try:
+    from langchain_mistralai import ChatMistralAI
+except ImportError as e:
+    raise MissingDependencyInstall("langchain_mistralai") from e
+
+try:
+    from langchain_community.document_loaders import (
+        TextLoader,
+        UnstructuredMarkdownLoader,
+    )
+except ImportError as e:
+    raise MissingDependencyInstall("langchain_community") from e
+
+try:
+    from langchain_experimental.graph_transformers import LLMGraphTransformer
+except ImportError as e:
+    raise MissingDependencyInstall("langchain_experimental") from e
 
 
 class BuilderSettings(BaseSettings):
