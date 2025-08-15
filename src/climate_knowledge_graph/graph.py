@@ -5,6 +5,7 @@ Modules to manage graphs (centered around Neo4j graphs)
 import json
 
 from langchain_neo4j import Neo4jGraph
+from langchain_neo4j.graphs.graph_document import GraphDocument, Node, Relationship
 
 from climate_knowledge_graph import Settings
 
@@ -39,5 +40,27 @@ def dump_graph_to_json(g: Neo4jGraph, output_json: str) -> None:
 
     data = {"nodes": nodes, "relationships": relationships}
     with open(output_json, "w") as file:
-        json.dump(data, file, indent=4)
+        json.dump(data, file)
     return
+
+
+def load_graph_documents_from_json(input_json: str) -> list[GraphDocument]:
+    with open(input_json, "r") as f:
+        json_dict = json.load(f)
+
+    nodes_dict = {i["id"]: Node(id=i["id"]) for i in json_dict["nodes"]}
+
+    gds = [
+        GraphDocument(
+            nodes=list(nodes_dict.values()),
+            relationships=[
+                Relationship(
+                    source=nodes_dict[r.get("source_id")],
+                    target=nodes_dict[r.get("target_id")],
+                    type=r.get("relationship_type"),
+                )
+                for r in json_dict["relationships"]
+            ],
+        )
+    ]
+    return gds

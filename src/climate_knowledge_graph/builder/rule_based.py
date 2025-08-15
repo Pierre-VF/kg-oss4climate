@@ -7,8 +7,8 @@ import re
 from langchain_neo4j.graphs.graph_document import GraphDocument, Node, Relationship
 from urllib3.util import parse_url
 
-from climate_knowledge_graph.builder.helpers import unique_list
 from climate_knowledge_graph.exceptions import MissingDependencyInstall
+from climate_knowledge_graph.helpers import unique_list
 from climate_knowledge_graph.semantics import (
     RelationshipWithRuleBasedLogicEnum,
     ResourceTypeEnum,
