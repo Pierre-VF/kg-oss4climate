@@ -1,6 +1,6 @@
 [project]
-name = "kg-oss4climate"
-version = "0.2.0"
+name = "climate-knowledge-graph"
+version = "0.1.0"
 description = "This package  supports Knowledge Graph building for climate"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -12,3 +12,10 @@ dependencies = [
     "pydantic-settings>=2.10.1",
     "python-dotenv>=1.1.1",
 ]
+packages = [
+    "src/climate_knowledge_graph",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

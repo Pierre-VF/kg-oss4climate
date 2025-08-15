@@ -151,6 +151,29 @@ wheels = [
 ]
 
 [[package]]
+name = "climate-knowledge-graph"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "langchain-community" },
+    { name = "langchain-experimental" },
+    { name = "langchain-mistralai" },
+    { name = "langchain-neo4j" },
+    { name = "pydantic-settings" },
+    { name = "python-dotenv" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "langchain-community", specifier = ">=0.3.27" },
+    { name = "langchain-experimental", specifier = ">=0.3.4" },
+    { name = "langchain-mistralai", specifier = ">=0.2.11" },
+    { name = "langchain-neo4j", specifier = ">=0.5.0" },
+    { name = "pydantic-settings", specifier = ">=2.10.1" },
+    { name = "python-dotenv", specifier = ">=1.1.1" },
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -374,29 +397,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/6a/0a/eebeb1fa92507ea94016a2a790b93c2ae41a7e18778f85471dc54475ed25/jsonpointer-3.0.0.tar.gz", hash = "sha256:2b2d729f2091522d61c3b31f82e11870f60b68f43fbc705cb76bf4b832af59ef", size = 9114, upload-time = "2024-06-10T19:24:42.462Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/71/92/5e77f98553e9e75130c78900d000368476aed74276eb8ae8796f65f00918/jsonpointer-3.0.0-py2.py3-none-any.whl", hash = "sha256:13e088adc14fca8b6aa8177c044e12701e6ad4b28ff10e65f2267a90109c9942", size = 7595, upload-time = "2024-06-10T19:24:40.698Z" },
-]
-
-[[package]]
-name = "kg-oss4climate"
-version = "0.2.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "langchain-community" },
-    { name = "langchain-experimental" },
-    { name = "langchain-mistralai" },
-    { name = "langchain-neo4j" },
-    { name = "pydantic-settings" },
-    { name = "python-dotenv" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "langchain-community", specifier = ">=0.3.27" },
-    { name = "langchain-experimental", specifier = ">=0.3.4" },
-    { name = "langchain-mistralai", specifier = ">=0.2.11" },
-    { name = "langchain-neo4j", specifier = ">=0.5.0" },
-    { name = "pydantic-settings", specifier = ">=2.10.1" },
-    { name = "python-dotenv", specifier = ">=1.1.1" },
 ]
 
 [[package]]
