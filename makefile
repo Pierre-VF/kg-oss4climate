@@ -1,7 +1,7 @@
 
 .PHONY: install
 install:
-	uv sync
+	uv sync --all-groups
 
 
 .PHONY: local_db_run
