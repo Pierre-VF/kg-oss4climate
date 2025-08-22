@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "langchain-neo4j>=0.5.0",
+    "oss4climate",
     "pydantic-settings>=2.10.1",
     "python-dotenv>=1.1.1",
 ]
@@ -30,3 +31,6 @@ builder = [
 test = [
     "pytest>=8.4.1",
 ]
+
+[tool.uv.sources]
+oss4climate = { git = "https://github.com/Pierre-VF/oss4climate.git", branch="pvf_dev" }
