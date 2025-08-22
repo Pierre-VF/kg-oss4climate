@@ -55,9 +55,13 @@ def _extract_links_from_html_str(html_text: str):
     ]
 
 
-def _url_to_resource_type(url: str) -> ResourceTypeEnum | None:
+def _url_to_resource_type(url: str | None) -> ResourceTypeEnum | None:
+    if url is None:
+        return None
     parsed_url = parse_url(url)
     host = parsed_url.host
+    if host is None:
+        return None
     if (host in ["github.com", "bitbucket.org", "codeberg.org"]) or ("gitlab." in host):
         return ResourceTypeEnum.CODE_REPOSITORY
     elif parsed_url.path in ["", "/", None]:
@@ -75,7 +79,7 @@ def extract_url_targets_into_graph_documents(
             md_content = f.read()
         raw_links = _extract_links_from_markdown_str(md_content)
         links = [(_f_clean_link_title(i), url) for i, url in raw_links]
-    if file_path.endswith(".html"):
+    elif file_path.endswith(".html"):
         with open(file_path, "r") as f:
             html_content = f.read()
         links = _extract_links_from_html_str(html_content)
