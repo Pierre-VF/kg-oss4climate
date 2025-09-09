@@ -12,6 +12,7 @@ dependencies = [
     "pydantic-ai-slim[mistral]>=1.0.0",
     "pydantic-settings>=2.10.1",
     "python-dotenv>=1.1.1",
+    "wordcloud>=1.9.4",
 ]
 packages = [
     "src/climate_knowledge_graph",
