@@ -34,7 +34,7 @@ log_info("- Loading documents")
 df = load_oss4climate_data_as_dataframe(include_readme=False)
 
 urls = [(str(r["name"]), str(r["url"])) for i, r in df.iterrows()]
-licences = [(str(r["name"]), str(r["license"])) for i, r in df.iterrows()]
+licenses = [(str(r["name"]), str(r["license"])) for i, r in df.iterrows()]
 organisations = [(str(r["name"]), str(r["organisation"])) for i, r in df.iterrows()]
 
 

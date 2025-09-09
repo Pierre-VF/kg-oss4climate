@@ -6,5 +6,6 @@ Underlying tools:
 - [LangChain](https://python.langchain.com/docs/introduction/)
 
 
-Later: 
-- Try speeding interfaceup using `neo4j-rust-ext` (instead of the `neo4j` dependency)
+Interesting queries:
+
+- `MATCH p=()-[:IS_IMPLEMENTED_IN|IS_FROM_ORGANISATION|IS_LICENSED_UNDER|IS_HOSTED_ON_DOMAIN]->() RETURN p LIMIT 2500;``shows the full graph

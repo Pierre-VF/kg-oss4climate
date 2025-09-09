@@ -46,16 +46,22 @@ languages = [
     for i, r in df.iterrows()
     if isinstance(r["language"], str)
 ]
-licences = [(str(r["name"]), str(r["license"])) for i, r in df.iterrows()]
+licenses = [(str(r["name"]), str(r["license"])) for i, r in df.iterrows()]
 organisations = [(str(r["name"]), str(r["organisation"])) for i, r in df.iterrows()]
 readme_collated = " ".join(df["description"].apply(str).to_list())
 
 
 repo = ResourceTypeEnum.CODE_REPOSITORY.value
-nodes = [
-    Node(id=r["name"], type=repo, properties={"url": r["url"]})
-    for i, r in df.iterrows()
-]
+license = ResourceTypeEnum.SOFTWARE_LICENSE.value
+language = ResourceTypeEnum.PROGRAMMING_LANGUAGE.value
+nodes = (
+    [
+        Node(id=r["name"], type=repo, properties={"url": r["url"]})
+        for i, r in df.iterrows()
+    ]
+    + [Node(id=i, type=language) for i in df["language"].unique() if isinstance(i, str)]
+    + [Node(id=i, type=license) for i in df["license"].unique() if isinstance(i, str)]
+)
 
 # -------------------------------------------------------------------------------------
 #   / Loading data
@@ -94,8 +100,8 @@ gdocs = [
         nodes=nodes,
     ),
     map_to_relationships_in_graph_document(
-        [i[0] for i in licences],
-        [i[1] for i in licences],
+        [i[0] for i in licenses],
+        [i[1] for i in licenses],
         RelationshipWithRuleBasedLogicEnum.IS_LICENSED_UNDER,
         nodes=nodes,
     ),
