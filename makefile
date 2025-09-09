@@ -1,15 +1,18 @@
 
-POETRY_VERSION := 1.8.5
-CLI_NAME := "oss4climate.cli"
-
 .PHONY: install
 install:
-	pip install pipx
-	pipx ensurepath
-	pipx install poetry==$(POETRY_VERSION) || echo "Poetry already installed"
-	poetry config virtualenvs.create true 
-	poetry install --no-cache
+	uv sync --all-groups
 
-	python -m spacy download en_core_web_sm
-	# python -m spacy download en_core_web_trf
-	
+
+.PHONY: local_db_run
+local_db_run:
+	chmod +x src/shell/neo4j_run_in_docker.sh
+	src/shell/neo4j_run_in_docker.sh
+
+.PHONY: cleanup
+cleanup:
+	uv tool run pre-commit run --all
+
+.PHONY: test
+test:
+	uv run pytest src/test

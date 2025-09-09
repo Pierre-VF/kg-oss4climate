@@ -1,20 +1,43 @@
-[tool.poetry]
-name = "kg-oss4climate"
+[project]
+name = "climate-knowledge-graph"
 version = "0.1.0"
-description = "Knowledge graph building for OSS in the climate space"
-authors = ["Pierre V-F <pierre@pierrevf.consulting>"]
-license = "MIT"
+description = "This package  supports Knowledge Graph building for climate"
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.12,<3.13"
-pandas = "^2.2.3"
-oss4climate = {url = "https://github.com/Pierre-VF/oss4climate/archive/refs/heads/main.zip"}
-networkx = "^3.4.2"
-tqdm = "^4.67.1"
-spacy = "^3.8.3"
-
+requires-python = ">=3.13"
+dependencies = [
+    "diskcache>=5.6.3",
+    "langchain-mistralai>=0.2.11",
+    "langchain-neo4j>=0.5.0",
+    "neo4j-rust-ext>=5.28.2.1",
+    "oss4climate",
+    "pydantic-ai-slim[mistral]>=1.0.0",
+    "pydantic-settings>=2.10.1",
+    "python-dotenv>=1.1.1",
+]
+packages = [
+    "src/climate_knowledge_graph",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+builder = [
+    "beautifulsoup4>=4.13.4",
+    "jinja2>=3.1.6",
+    "langchain-community>=0.3.27",
+    "langchain-experimental>=0.3.4",
+    "langchain-mistralai>=0.2.11",
+    "markdown>=3.8.2",
+    "unstructured>=0.18.13",
+]
+test = [
+    "pytest>=8.4.1",
+]
+analysis = [
+    "wordcloud>=1.9.4",
+]
+
+[tool.uv.sources]
+oss4climate = { git = "https://github.com/Pierre-VF/oss4climate.git", branch="pvf_dev" }
