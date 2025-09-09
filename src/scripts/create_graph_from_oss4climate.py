@@ -16,6 +16,9 @@ from climate_knowledge_graph.builder.rule_based import (
     map_urls_to_is_available_at_url_relationships,
 )
 from climate_knowledge_graph.configuration import Settings
+from climate_knowledge_graph.data_sources.oss4climate_io import (
+    load_oss4climate_data_as_dataframe,
+)
 from climate_knowledge_graph.graph import add_graph_documents_to_graph, load_graph
 
 s = Settings()
@@ -36,26 +39,24 @@ if force_refresh or not os.path.exists(FILE_OUTPUT_OPTIMISED_LISTING_FEATHER):
 
 log_info("- Loading documents")
 
-urls = []
-licences = []
-organisations = []
-# Make sure to coordinate the below with the app start procedure
-for r in SEARCH_RESULTS.iter_documents(
-    FILE_OUTPUT_OPTIMISED_LISTING_FEATHER,
-    load_in_object_without_readme=True,
-    display_tqdm=True,
-    memory_safe=True,
-):
-    urls.append((r["name"], r["url"]))
-    if isinstance(r["license"], str):
-        licences.append((r["name"], r["license"]))
-    if isinstance(r["organisation"], str):
-        organisations.append((r["name"], r["organisation"]))
+df = load_oss4climate_data_as_dataframe(include_readme=False)
+
+urls = [(str(r["name"]), str(r["url"])) for i, r in df.iterrows()]
+licences = [(str(r["name"]), str(r["license"])) for i, r in df.iterrows()]
+organisations = [(str(r["name"]), str(r["organisation"])) for i, r in df.iterrows()]
+readme_collated = " ".join(df["description"].apply(str).to_list())
 
 
 # -------------------------------------------------------------------------------------
 #   / Loading data
 # -------------------------------------------------------------------------------------
+
+
+from wordcloud import WordCloud
+
+w = WordCloud(height=600, width=1000).generate(readme_collated)
+
+w.to_file(".data/first_wordcloud.png")
 
 raw_urls = [i[1] for i in urls]
 
