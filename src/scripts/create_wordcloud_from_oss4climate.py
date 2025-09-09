@@ -36,8 +36,10 @@ df = load_oss4climate_data_as_dataframe(include_readme=False)
 urls = [(str(r["name"]), str(r["url"])) for i, r in df.iterrows()]
 licences = [(str(r["name"]), str(r["license"])) for i, r in df.iterrows()]
 organisations = [(str(r["name"]), str(r["organisation"])) for i, r in df.iterrows()]
-readme_collated = " ".join(df["description"].apply(str).to_list())
 
+
+readme_collated = " ".join(df["description"].apply(str).to_list())
+# readme_collated = " ".join(df["readme"].apply(str).to_list())
 
 # -------------------------------------------------------------------------------------
 #   / Loading data

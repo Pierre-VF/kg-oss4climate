@@ -29,7 +29,7 @@ def load_oss4climate_data_as_dataframe(include_readme: bool = False) -> pd.DataF
     # Make sure to coordinate the below with the app start procedure
     for r in SEARCH_RESULTS.iter_documents(
         FILE_OUTPUT_OPTIMISED_LISTING_FEATHER,
-        load_in_object_without_readme=True,
+        load_in_object_without_readme=(not include_readme),
         display_tqdm=True,
         memory_safe=True,
     ):
@@ -38,5 +38,8 @@ def load_oss4climate_data_as_dataframe(include_readme: bool = False) -> pd.DataF
     df = pd.DataFrame(data=rows)
     if include_readme:
         if "readme" not in df.keys():
-            raise RuntimeError("No readme found in columns")
+            if "optimised_readme" in df.keys():
+                df.rename(columns={"optimised_readme": "readme"}, inplace=True)
+            else:
+                raise RuntimeError("No readme found in columns")
     return df
