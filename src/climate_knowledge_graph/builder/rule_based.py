@@ -75,6 +75,7 @@ def map_to_relationships_in_graph_document(
     sources: list[str],
     targets: list[str] | str | Enum,
     relationship: RelationshipWithRuleBasedLogicEnum | str,
+    nodes: list[Node] | None = None,
     source_identifier: str | None = None,
 ) -> GraphDocument:
     if not isinstance(targets, list):
@@ -82,7 +83,18 @@ def map_to_relationships_in_graph_document(
             targets = targets.value
         # To support convenience passing of single target
         targets = [targets] * len(sources)
-    unique_nodes = {i: Node(id=i) for i in unique_list(sources + targets)}
+
+    if nodes:
+        # Reuse nodes if pre-specified (e.g. because they contain labels)
+        unique_nodes = {i.id: i for i in nodes}
+    else:
+        unique_nodes = {}
+
+    # Add missing nodes (if any)
+    for i in unique_list(sources + targets):
+        if unique_nodes.get(i) is None:
+            unique_nodes[i] = Node(id=i)
+
     if isinstance(relationship, Enum):
         relationship_str = relationship.value
     elif isinstance(relationship, str):
@@ -91,11 +103,11 @@ def map_to_relationships_in_graph_document(
         raise TypeError("relationship must be str or Enum")
     relations = [
         Relationship(
-            source=unique_nodes[text],
-            target=unique_nodes[url],
+            source=unique_nodes[s_i],
+            target=unique_nodes[t_i],
             type=relationship_str,
         )
-        for text, url in zip(sources, targets)
+        for s_i, t_i in zip(sources, targets)
     ]
     if source_identifier:
         kwargs = dict(source=source_identifier)
@@ -112,18 +124,21 @@ def map_to_relationships_in_graph_document(
 
 def map_urls_to_is_available_at_url_relationships(
     urls: list[tuple[str, str]],
+    nodes: list[Node] | None = None,
     source_identifier: str | None = None,
 ) -> GraphDocument:
     return map_to_relationships_in_graph_document(
         sources=[i[0].strip() for i in urls],
         targets=[i[1] for i in urls],
         relationship=RelationshipWithRuleBasedLogicEnum.IS_AVAILABLE_AT_URL,
+        nodes=nodes,
         source_identifier=source_identifier,
     )
 
 
 def map_urls_to_is_a_relationships(
     urls: list[tuple[str, str]],
+    nodes: list[Node] | None = None,
     source_identifier: str | None = None,
 ) -> GraphDocument:
     x = [(_url_to_resource_type(url), text) for text, url in urls]
@@ -131,6 +146,7 @@ def map_urls_to_is_a_relationships(
         sources=[i[1].strip() for i in x],
         targets=[i[0].value for i in x],
         relationship=RelationshipWithRuleBasedLogicEnum.IS_A,
+        nodes=nodes,
         source_identifier=source_identifier,
     )
 

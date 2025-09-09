@@ -1,5 +1,6 @@
 import os
 
+from langchain_neo4j.graphs.graph_document import Node
 from oss4climate.src.config import (
     FILE_OUTPUT_OPTIMISED_LISTING_FEATHER,
 )
@@ -12,8 +13,6 @@ from climate_knowledge_graph.builder.rule_based import (
     RelationshipWithRuleBasedLogicEnum,
     ResourceTypeEnum,
     map_to_relationships_in_graph_document,
-    map_urls_to_is_a_relationships,
-    map_urls_to_is_available_at_url_relationships,
 )
 from climate_knowledge_graph.configuration import Settings
 from climate_knowledge_graph.data_sources.oss4climate_io import (
@@ -42,10 +41,21 @@ log_info("- Loading documents")
 df = load_oss4climate_data_as_dataframe(include_readme=False)
 
 urls = [(str(r["name"]), str(r["url"])) for i, r in df.iterrows()]
+languages = [
+    (str(r["name"]), r["language"])
+    for i, r in df.iterrows()
+    if isinstance(r["language"], str)
+]
 licences = [(str(r["name"]), str(r["license"])) for i, r in df.iterrows()]
 organisations = [(str(r["name"]), str(r["organisation"])) for i, r in df.iterrows()]
 readme_collated = " ".join(df["description"].apply(str).to_list())
 
+
+repo = ResourceTypeEnum.CODE_REPOSITORY.value
+nodes = [
+    Node(id=r["name"], type=repo, properties={"url": r["url"]})
+    for i, r in df.iterrows()
+]
 
 # -------------------------------------------------------------------------------------
 #   / Loading data
@@ -75,24 +85,28 @@ gdocs = [
         raw_urls,
         [parse_url(i).host for i in raw_urls],
         "IS_HOSTED_ON_DOMAIN",
+        nodes=nodes,
+    ),
+    map_to_relationships_in_graph_document(
+        [i[0] for i in languages],
+        [i[1] for i in languages],
+        "IS_IMPLEMENTED_IN",
+        nodes=nodes,
     ),
     map_to_relationships_in_graph_document(
         [i[0] for i in licences],
         [i[1] for i in licences],
         RelationshipWithRuleBasedLogicEnum.IS_LICENSED_UNDER,
-    ),
-    map_to_relationships_in_graph_document(
-        [i[1] for i in organisations],
-        ResourceTypeEnum.ORGANISATION,
-        RelationshipWithRuleBasedLogicEnum.IS_A,
+        nodes=nodes,
     ),
     map_to_relationships_in_graph_document(
         [i[0] for i in organisations],
         [i[1] for i in organisations],
         RelationshipWithRuleBasedLogicEnum.IS_FROM_ORGANISATION,
+        nodes=nodes,
     ),
-    map_urls_to_is_available_at_url_relationships(urls),
-    map_urls_to_is_a_relationships(urls),
+    # map_urls_to_is_available_at_url_relationships(urls),
+    # map_urls_to_is_a_relationships(urls),
 ]
 
 add_graph_documents_to_graph(g, graph_documents=gdocs)
