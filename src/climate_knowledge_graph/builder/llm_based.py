@@ -4,8 +4,8 @@ Module for LLM-based graph generation
 
 from langchain_neo4j import Neo4jGraph
 from langchain_neo4j.graphs.graph_document import GraphDocument
-from pydantic_settings import BaseSettings
 
+from climate_knowledge_graph.configuration import Settings
 from climate_knowledge_graph.exceptions import MissingDependencyInstall
 from climate_knowledge_graph.semantics import RELATIONSHIPS
 
@@ -28,14 +28,9 @@ except ImportError as e:
     raise MissingDependencyInstall("langchain_experimental") from e
 
 
-class BuilderSettings(BaseSettings):
-    MISTRAL_API_KEY: str
-    MISTRAL_MODEL: str = "mistral-medium"
-
-
 def __starter_loader() -> LLMGraphTransformer:
     llm_transformer = LLMGraphTransformer(
-        llm=ChatMistralAI(temperature=0, model_name=BuilderSettings().MISTRAL_MODEL),
+        llm=ChatMistralAI(temperature=0, model_name=Settings().MISTRAL_MODEL),
         allowed_relationships=RELATIONSHIPS,
     )
     return llm_transformer

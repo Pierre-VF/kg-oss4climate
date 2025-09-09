@@ -7,7 +7,7 @@ import json
 from langchain_neo4j import Neo4jGraph
 from langchain_neo4j.graphs.graph_document import GraphDocument, Node, Relationship
 
-from climate_knowledge_graph import Settings
+from climate_knowledge_graph.configuration import Settings
 
 
 def load_graph(settings: Settings | None = None) -> Neo4jGraph:

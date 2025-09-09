@@ -6,15 +6,11 @@ from pydantic_ai import Agent
 from pydantic_ai.models.mistral import MistralModel
 from tqdm import tqdm
 
-from climate_knowledge_graph.builder.llm_based import BuilderSettings
 from climate_knowledge_graph.builder.templates import render_from_template
+from climate_knowledge_graph.configuration import Settings
 
 if __name__ == "__main__":
-    from diskcache import Cache
-
-    cache = Cache(
-        directory=os.path.expanduser("~/projects/github/kg-oss4climate/.data/cache")
-    )
+    cache = Settings.disk_cache
 
     input_file = os.path.expanduser("~/projects/github/kg-oss4climate/.data/orgs.csv")
     output_file = os.path.expanduser(
@@ -25,7 +21,7 @@ if __name__ == "__main__":
     df_orgs = pd.read_csv(input_file)
 
     if True:
-        mm = MistralModel(BuilderSettings().MISTRAL_MODEL)
+        mm = MistralModel(Settings().MISTRAL_MODEL)
         llm_agent = Agent(mm)
 
         def _f(url) -> dict:
@@ -34,7 +30,8 @@ if __name__ == "__main__":
                 return c
             try:
                 prompt = render_from_template(
-                    "prompts/organisation_enhance.md", {"WEBSITE": url}
+                    "prompts/organisation_metadata_generation_simple.md",
+                    {"WEBSITE": url},
                 )
                 x = llm_agent.run_sync(prompt)
                 clean_x = (
