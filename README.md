@@ -9,3 +9,12 @@ Underlying tools:
 Interesting queries:
 
 - `MATCH p=()-[:IS_IMPLEMENTED_IN|IS_FROM_ORGANISATION|IS_LICENSED_UNDER|IS_HOSTED_ON_DOMAIN]->() RETURN p LIMIT 2500;``shows the full graph
+
+
+Things to add:
+
+- [ ] Relationship "is fork of"
+- [ ] Several programming languages
+
+- [ ] Adding themes and solutions spaces (requires defining categories first)
+ 
