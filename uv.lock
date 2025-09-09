@@ -235,10 +235,12 @@ dependencies = [
     { name = "pydantic-ai-slim", extra = ["mistral"] },
     { name = "pydantic-settings" },
     { name = "python-dotenv" },
-    { name = "wordcloud" },
 ]
 
 [package.dev-dependencies]
+analysis = [
+    { name = "wordcloud" },
+]
 builder = [
     { name = "beautifulsoup4" },
     { name = "jinja2" },
@@ -262,10 +264,10 @@ requires-dist = [
     { name = "pydantic-ai-slim", extras = ["mistral"], specifier = ">=1.0.0" },
     { name = "pydantic-settings", specifier = ">=2.10.1" },
     { name = "python-dotenv", specifier = ">=1.1.1" },
-    { name = "wordcloud", specifier = ">=1.9.4" },
 ]
 
 [package.metadata.requires-dev]
+analysis = [{ name = "wordcloud", specifier = ">=1.9.4" }]
 builder = [
     { name = "beautifulsoup4", specifier = ">=4.13.4" },
     { name = "jinja2", specifier = ">=3.1.6" },

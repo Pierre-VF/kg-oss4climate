@@ -52,12 +52,6 @@ readme_collated = " ".join(df["description"].apply(str).to_list())
 # -------------------------------------------------------------------------------------
 
 
-from wordcloud import WordCloud
-
-w = WordCloud(height=600, width=1000).generate(readme_collated)
-
-w.to_file(".data/first_wordcloud.png")
-
 raw_urls = [i[1] for i in urls]
 
 if False:
