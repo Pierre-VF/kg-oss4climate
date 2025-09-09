@@ -3,6 +3,7 @@ Module for rule-based graph generation
 """
 
 import re
+from enum import Enum
 
 from langchain_neo4j.graphs.graph_document import GraphDocument, Node, Relationship
 from urllib3.util import parse_url
@@ -70,9 +71,69 @@ def _url_to_resource_type(url: str | None) -> ResourceTypeEnum | None:
         return None
 
 
-def extract_url_targets_into_graph_documents(
+def map_to_relationships_in_graph_document(
+    sources: list[str],
+    targets: list[str] | str | Enum,
+    relationship: RelationshipWithRuleBasedLogicEnum,
+    source_identifier: str | None = None,
+) -> GraphDocument:
+    if not isinstance(targets, list):
+        if isinstance(targets, Enum):
+            targets = targets.value
+        # To support convenience passing of single target
+        targets = [targets] * len(sources)
+    unique_nodes = {i: Node(id=i) for i in unique_list(sources + targets)}
+    relationship_str = relationship.value
+    relations = [
+        Relationship(
+            source=unique_nodes[text],
+            target=unique_nodes[url],
+            type=relationship_str,
+        )
+        for text, url in zip(sources, targets)
+    ]
+    if source_identifier:
+        kwargs = dict(source=source_identifier)
+    else:
+        kwargs = dict()
+
+    gd = GraphDocument(
+        nodes=list(unique_nodes.values()),
+        relationships=relations,
+        **kwargs,
+    )
+    return gd
+
+
+def map_urls_to_is_available_at_url_relationships(
+    urls: list[tuple[str, str]],
+    source_identifier: str | None = None,
+) -> GraphDocument:
+    return map_to_relationships_in_graph_document(
+        sources=[i[0].strip() for i in urls],
+        targets=[i[1] for i in urls],
+        relationship=RelationshipWithRuleBasedLogicEnum.IS_AVAILABLE_AT_URL,
+        source_identifier=source_identifier,
+    )
+
+
+def map_urls_to_is_a_relationships(
+    urls: list[tuple[str, str]],
+    source_identifier: str | None = None,
+) -> GraphDocument:
+    x = [(_url_to_resource_type(url), text) for text, url in urls]
+    return map_to_relationships_in_graph_document(
+        sources=[i[1].strip() for i in x],
+        targets=[i[0].value for i in x],
+        relationship=RelationshipWithRuleBasedLogicEnum.IS_A,
+        source_identifier=source_identifier,
+    )
+
+
+def full_mapping_of_urls_and_targets_in_graph_documents(
     file_path: str,
     source_identifier: str | None = None,
+    filter_links: bool = True,
 ) -> list[GraphDocument]:
     if file_path.endswith(".md"):
         with open(file_path, "r") as f:
@@ -84,44 +145,20 @@ def extract_url_targets_into_graph_documents(
             html_content = f.read()
         links = _extract_links_from_html_str(html_content)
     else:
-        raise ValueError("Document must be Markdown")
+        raise ValueError("Document must be Markdown or HTML")
 
-    names = [i[0] for i in links]
-    urls = [i[1] for i in links]
-    unique_nodes = {
-        i: Node(id=i)
-        for i in unique_list(names + urls) + [i.value for i in ResourceTypeEnum]
-    }
-    rel_type = RelationshipWithRuleBasedLogicEnum.IS_AVAILABLE_AT_URL.value
-    rel_is_a_type = RelationshipWithRuleBasedLogicEnum.IS_A.value
-    relations = [
-        Relationship(
-            source=unique_nodes[text],
-            target=unique_nodes[url],
-            type=rel_type,
-        )
-        for text, url in links
+    if filter_links:
+        # Filter the links to remove irrelevant ones (e.g. badges and intra-page links)
+        links = [i for i in links if (not i[0].startswith(("!", "<")))]
+        links = [i for i in links if (not i[1].startswith("#"))]
+
+    return [
+        map_urls_to_is_available_at_url_relationships(
+            links,
+            source_identifier=source_identifier,
+        ),
+        map_urls_to_is_a_relationships(
+            links,
+            source_identifier=source_identifier,
+        ),
     ]
-
-    resource_types = [(_url_to_resource_type(url), text) for text, url in links]
-    relations += [
-        Relationship(
-            source=unique_nodes[text],
-            target=unique_nodes[t.value],
-            type=rel_is_a_type,
-        )
-        for t, text in resource_types
-        if (t is not None)
-    ]
-
-    if source_identifier:
-        kwargs = dict(source=file_path)
-    else:
-        kwargs = dict()
-
-    gd = GraphDocument(
-        nodes=list(unique_nodes.values()),
-        relationships=relations,
-        **kwargs,
-    )
-    return [gd]

@@ -64,3 +64,13 @@ def load_graph_documents_from_json(input_json: str) -> list[GraphDocument]:
         )
     ]
     return gds
+
+
+def add_graph_documents_to_graph(
+    graph: Neo4jGraph,
+    graph_documents: list[GraphDocument],
+    include_source: bool = False,
+):
+    print("Adding to graph")
+    graph.add_graph_documents(graph_documents, include_source=include_source)
+    print("Done")

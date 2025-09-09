@@ -2,7 +2,6 @@
 Module for LLM-based graph generation
 """
 
-from langchain_neo4j import Neo4jGraph
 from langchain_neo4j.graphs.graph_document import GraphDocument
 
 from climate_knowledge_graph.configuration import Settings
@@ -66,12 +65,3 @@ def load_text_file_into_graph_documents(
         llm_transformer,
         document,
     )
-
-
-def add_graph_documents_to_graph(
-    graph: Neo4jGraph,
-    graph_documents: list[GraphDocument],
-):
-    print("Adding to graph")
-    graph.add_graph_documents(graph_documents, include_source=True)
-    print("Done")
