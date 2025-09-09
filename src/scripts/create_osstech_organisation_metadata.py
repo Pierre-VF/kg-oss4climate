@@ -2,7 +2,8 @@ import json
 import os
 
 import pandas as pd
-from langchain_mistralai import ChatMistralAI
+from pydantic_ai import Agent
+from pydantic_ai.models.mistral import MistralModel
 from tqdm import tqdm
 
 from climate_knowledge_graph.builder.llm_based import BuilderSettings
@@ -24,19 +25,20 @@ if __name__ == "__main__":
     df_orgs = pd.read_csv(input_file)
 
     if True:
-        llm = ChatMistralAI(temperature=0, model_name=BuilderSettings().MISTRAL_MODEL)
+        mm = MistralModel(BuilderSettings().MISTRAL_MODEL)
+        llm_agent = Agent(mm)
 
         def _f(url) -> dict:
             c = cache.get(url)
-            if c:
+            if c and (c.get("exception") is None):
                 return c
             try:
                 prompt = render_from_template(
                     "prompts/organisation_enhance.md", {"WEBSITE": url}
                 )
-                x = llm.invoke(prompt)
+                x = llm_agent.run_sync(prompt)
                 clean_x = (
-                    x.content.replace("\n", "").replace("```", "").replace("json{", "{")
+                    x.output.replace("\n", "").replace("```", "").replace("json{", "{")
                 )
                 out = json.loads(clean_x)
             except Exception as e:

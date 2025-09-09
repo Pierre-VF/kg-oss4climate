@@ -6,8 +6,10 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "diskcache>=5.6.3",
+    "langchain-mistralai>=0.2.11",
     "langchain-neo4j>=0.5.0",
     "oss4climate",
+    "pydantic-ai-slim[mistral]>=1.0.0",
     "pydantic-settings>=2.10.1",
     "python-dotenv>=1.1.1",
 ]
