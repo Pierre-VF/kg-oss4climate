@@ -74,7 +74,7 @@ def _url_to_resource_type(url: str | None) -> ResourceTypeEnum | None:
 def map_to_relationships_in_graph_document(
     sources: list[str],
     targets: list[str] | str | Enum,
-    relationship: RelationshipWithRuleBasedLogicEnum,
+    relationship: RelationshipWithRuleBasedLogicEnum | str,
     source_identifier: str | None = None,
 ) -> GraphDocument:
     if not isinstance(targets, list):
@@ -83,7 +83,12 @@ def map_to_relationships_in_graph_document(
         # To support convenience passing of single target
         targets = [targets] * len(sources)
     unique_nodes = {i: Node(id=i) for i in unique_list(sources + targets)}
-    relationship_str = relationship.value
+    if isinstance(relationship, Enum):
+        relationship_str = relationship.value
+    elif isinstance(relationship, str):
+        relationship_str = relationship
+    else:
+        raise TypeError("relationship must be str or Enum")
     relations = [
         Relationship(
             source=unique_nodes[text],

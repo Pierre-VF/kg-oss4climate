@@ -5,6 +5,8 @@ from oss4climate.src.config import (
 )
 from oss4climate.src.log import log_info, log_warning
 from oss4climate.src.nlp.search import SearchResults
+from oss4climate.src.parsers import identify_parsing_targets
+from urllib3.util import parse_url
 
 from climate_knowledge_graph.builder.rule_based import (
     RelationshipWithRuleBasedLogicEnum,
@@ -55,7 +57,30 @@ for r in SEARCH_RESULTS.iter_documents(
 #   / Loading data
 # -------------------------------------------------------------------------------------
 
+raw_urls = [i[1] for i in urls]
+
+if False:
+    structured_targets = identify_parsing_targets()
+
+    g_tools = [
+        map_to_relationships_in_graph_document(
+            structured_targets.github_repositories,
+            "Github",
+            "HOSTED_ON",
+        ),
+        map_to_relationships_in_graph_document(
+            structured_targets.gitlab_projects,
+            "Gitlab",
+            "HOSTED_ON",
+        ),
+    ]
+
 gdocs = [
+    map_to_relationships_in_graph_document(
+        raw_urls,
+        [parse_url(i).host for i in raw_urls],
+        "IS_HOSTED_ON_DOMAIN",
+    ),
     map_to_relationships_in_graph_document(
         [i[0] for i in licences],
         [i[1] for i in licences],
