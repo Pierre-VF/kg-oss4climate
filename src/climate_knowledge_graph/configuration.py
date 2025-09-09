@@ -12,6 +12,7 @@ class Settings(pydantic_settings.BaseSettings):
     NEO4J_URL: str = "localhost"
     NEO4J_USERNAME: str = "neo4j"
     NEO4J_PASSWORD: str = "your_password"
+    NEO4J_DATABASE: str = "neo4j"
     MISTRAL_API_KEY: str | None = None
     MISTRAL_MODEL: str = "mistral-medium"
     DISK_CACHE_DIRECTORY: str | None = None

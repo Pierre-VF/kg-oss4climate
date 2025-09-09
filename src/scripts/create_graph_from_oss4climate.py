@@ -16,6 +16,13 @@ from climate_knowledge_graph.builder.rule_based import (
 from climate_knowledge_graph.configuration import Settings
 from climate_knowledge_graph.graph import add_graph_documents_to_graph, load_graph
 
+s = Settings()
+g = load_graph(s)
+
+# -------------------------------------------------------------------------------------
+#   Loading data
+# -------------------------------------------------------------------------------------
+
 SEARCH_RESULTS = SearchResults()
 force_refresh = False
 
@@ -44,8 +51,9 @@ for r in SEARCH_RESULTS.iter_documents(
         organisations.append((r["name"], r["organisation"]))
 
 
-s = Settings()
-g = load_graph(s)
+# -------------------------------------------------------------------------------------
+#   / Loading data
+# -------------------------------------------------------------------------------------
 
 gdocs = [
     map_to_relationships_in_graph_document(
@@ -57,6 +65,11 @@ gdocs = [
         [i[1] for i in organisations],
         ResourceTypeEnum.ORGANISATION,
         RelationshipWithRuleBasedLogicEnum.IS_A,
+    ),
+    map_to_relationships_in_graph_document(
+        [i[0] for i in organisations],
+        [i[1] for i in organisations],
+        RelationshipWithRuleBasedLogicEnum.IS_FROM_ORGANISATION,
     ),
     map_urls_to_is_available_at_url_relationships(urls),
     map_urls_to_is_a_relationships(urls),

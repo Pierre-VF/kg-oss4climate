@@ -14,12 +14,16 @@ def load_graph(settings: Settings | None = None) -> Neo4jGraph:
     if settings is None:
         settings = Settings()
 
+    connection_url = f"neo4j://{settings.NEO4J_URL}"
+    print(f"Neo4j attempting to connect on {connection_url}")
     graph = Neo4jGraph(
-        url=f"neo4j://{settings.NEO4J_URL}",
+        url=connection_url,
         username=settings.NEO4J_USERNAME,
         password=settings.NEO4J_PASSWORD,
+        database=settings.NEO4J_DATABASE,
         driver_config=dict(),
     )
+    print("Connection established")
     return graph
 
 
